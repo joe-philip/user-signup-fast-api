@@ -29,3 +29,18 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
         "profile_picture": None
     }
     return profile_data
+
+@router.get("/user/{user_id}", response_model=UserProfile)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    profile = db.query(Profile).filter(Profile.user_id == user_id).first()
+    profile_data = {
+        "full_name": db_user.full_name,
+        "email": db_user.email,
+        "phone": db_user.phone,
+        "profile_picture": profile.profile_picture if profile else None
+    }
+    return profile_data
