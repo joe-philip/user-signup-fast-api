@@ -5,3 +5,4 @@
 # *.[oa]
 # *~
 env/
+__pycache__
